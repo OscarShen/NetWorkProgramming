@@ -67,18 +67,43 @@ public class EchoServer {
 		}
 
 		public void handle(SocketChannel socketChannel) {
-			Socket socket = socketChannel.socket();
-			System.out.println("接收到客户连接，来自：" + socket.getInetAddress() + ":" + socket.getPort());
-			
-			
+			try {
+				Socket socket = socketChannel.socket();
+				System.out.println("接收到客户连接，来自：" + socket.getInetAddress() + ":" + socket.getPort());
+				BufferedReader br = getReader(socket);
+				PrintWriter pw = getWriter(socket);
+
+				String msg = null;
+				while ((msg = br.readLine()) != null) {
+					System.out.println(msg);
+					pw.println(echo(msg));
+					if ("bye".equals(msg)) {
+						break;
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (socketChannel != null)
+						socketChannel.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
 		}
-		
-		private PrintWriter getWriter(Socket socket) throws IOException{
+
+		private String echo(String msg) {
+			return "echo:" + msg;
+		}
+
+		private PrintWriter getWriter(Socket socket) throws IOException {
 			OutputStream os = socket.getOutputStream();
 			return new PrintWriter(new OutputStreamWriter(os));
 		}
 
-		private BufferedReader getReader(Socket socket) throws IOException{
+		private BufferedReader getReader(Socket socket) throws IOException {
 			InputStream is = socket.getInputStream();
 			return new BufferedReader(new InputStreamReader(is));
 		}
