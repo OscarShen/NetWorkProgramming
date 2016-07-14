@@ -77,6 +77,7 @@ public class EchoServer {
 				while ((msg = br.readLine()) != null) {
 					System.out.println(msg);
 					pw.println(echo(msg));
+					pw.flush();
 					if ("bye".equals(msg)) {
 						break;
 					}
