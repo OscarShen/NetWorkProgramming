@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
- * 非阻塞的PingClient
+ * 一个网站连接响应时间的连接器：非阻塞的
  * 
  * @author ruiyao.shen
  *
@@ -81,7 +81,7 @@ public class PingClient {
 	 * 
 	 * @param target
 	 */
-	private void addFinishedTarget(Target target) {
+	public void addFinishedTarget(Target target) {
 		synchronized (finishedTargets) {
 			finishedTargets.notify();
 			finishedTargets.add(target);
@@ -111,7 +111,7 @@ public class PingClient {
 	/**
 	 * 接收用户输入的域名，向targets队列中加入任务，主线程会调用该方法
 	 */
-	private void receiveTarget() {
+	public void receiveTarget() {
 		try {
 			BufferedReader localReader = new BufferedReader(new InputStreamReader(System.in));
 			String msg = null;
