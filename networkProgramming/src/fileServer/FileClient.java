@@ -36,7 +36,7 @@ public class FileClient {
 	}
 
 	public static void main(String[] args) throws IOException {
-
+		new FileClient().service();
 	}
 
 	private void service() {
@@ -62,11 +62,11 @@ public class FileClient {
 					it.remove();
 					if (req.equals("get")) {
 						sendReq(key);
-
+						receiveFile(key, url);
 					} else if (req.equals("put")) {
-
+						sendReq(key);
+						sendFile(key, url);
 					}
-
 				}
 			}
 		} catch (IOException e) {
@@ -106,8 +106,11 @@ public class FileClient {
 		receiveBuffer.clear();
 		while ((len = socketChannel.read(receiveBuffer)) != -1) {
 			receiveBuffer.flip();
-
+			receiveBuffer.get(b, 0, len);
+			fos.write(b, 0, len);
+			receiveBuffer.compact();
 		}
+		fos.close();
 	}
 
 	private String receiveFromUser() throws IOException {
