@@ -32,6 +32,7 @@ public class FileClient {
 		InetSocketAddress isa = new InetSocketAddress(ia, 8000);
 		socketChannel.connect(isa);
 		socketChannel.configureBlocking(false);
+		selector = Selector.open();
 		System.out.println("与服务器建立连接成功");
 	}
 
@@ -55,17 +56,19 @@ public class FileClient {
 				}
 
 				socketChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-				Set<SelectionKey> readyKey = selector.selectedKeys();
-				Iterator<SelectionKey> it = readyKey.iterator();
-				while (it.hasNext()) {
-					SelectionKey key = it.next();
-					it.remove();
-					if (req.equals("get")) {
-						sendReq(key);
-						receiveFile(key, url);
-					} else if (req.equals("put")) {
-						sendReq(key);
-						sendFile(key, url);
+				while (selector.select() > 0) {
+					Set<SelectionKey> readyKey = selector.selectedKeys();
+					Iterator<SelectionKey> it = readyKey.iterator();
+					while (it.hasNext()) {
+						SelectionKey key = it.next();
+						it.remove();
+						if (req.equals("get")) {
+							sendReq(key);
+							receiveFile(key, url);
+						} else if (req.equals("put")) {
+							sendReq(key);
+							sendFile(key, url);
+						}
 					}
 				}
 			}
