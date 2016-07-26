@@ -28,6 +28,10 @@ public class SimpleHttpServer {
 		System.out.println("服务器启动");
 	}
 
+	public static void main(String[] args) throws IOException {
+		new SimpleHttpServer().service();
+	}
+
 	public void service() {
 		while (true) {
 			SocketChannel socketChannel = null;
@@ -63,7 +67,7 @@ public class SimpleHttpServer {
 				System.out.println(request);
 
 				StringBuffer sb = new StringBuffer("HTTP/1.1 200 OK\r\n");
-				sb.append("Content-Type:text/html\r\n\r\n");
+				sb.append("Content-type:text/html;charset=UTF8\r\n\r\n");
 				socketChannel.write(encode(sb.toString()));
 
 				FileInputStream in;
